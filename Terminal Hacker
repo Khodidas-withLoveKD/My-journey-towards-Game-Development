@@ -1,0 +1,170 @@
+using UnityEngine;
+
+public class Terminal_Hacker : MonoBehaviour
+{
+    //Game State 
+    int level, count = 0;
+    const string Menu = "Type \"Menu\" to enter menu again";
+    string password;
+    string[] lvl1password = { "dog", "lion", "cat", "tiger", "bhundru" };
+    string[] lvl2password = { "tea", "coffee", "pizza", "lassagne", "maggie" };
+    string[] lvl3password = { "daru", "bhainsa", "kutte", "bhabua", "bettiah" };
+    enum Screen { Welcome, MainMenu, Password, Win };
+    Screen currentScreen;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        currentScreen = Screen.Welcome;
+        Terminal.WriteLine("Enter your lovely Name ;)");
+    }
+
+    void ShowWelcomeMenu(string greeting)
+    {
+        Terminal.ClearScreen();
+        Terminal.WriteLine("Hello Dear " + greeting);
+        ShowMainMenu();
+    }
+    void ShowMainMenu()
+    {
+        currentScreen = Screen.MainMenu;
+        Terminal.WriteLine("What would you like to hack into?\nhmmmm....?");
+        Terminal.WriteLine("Press 1 to check Animal knowledge");
+        Terminal.WriteLine("Press 2 to check your food \nknowledge");
+        Terminal.WriteLine("Press 3 to guess the \"IMPOSSIBLE\"\nplaces of India");
+        Terminal.WriteLine("\nHow?....Guess the correct word");
+        Terminal.WriteLine("Select level: ");
+    }
+
+    void StartGame()
+    {
+        currentScreen = Screen.Password;
+        Terminal.ClearScreen();
+        Terminal.WriteLine(Menu);
+        Terminal.WriteLine("Choosen Level =" + level);
+        Terminal.WriteLine("Enter Password:      Hint:" + password.Anagram());
+    }
+    /*void Update()
+    {
+        int index = Random.Range(0, 6);
+        print(index);
+    }*/
+    void OnUserInput(string input)
+    {
+        count++;
+        if (currentScreen == Screen.Welcome)
+            ShowWelcomeMenu(input);
+
+        input = input.ToLower();
+        if (input == "menu")
+        {
+            Terminal.ClearScreen();
+            Terminal.WriteLine("Hello Again!!!");
+            ShowMainMenu();
+        }
+        else if (currentScreen == Screen.MainMenu)
+            RunMainMenu(input);
+        else if (currentScreen == Screen.Password)
+            CheckPassword(input);
+        else if (currentScreen == Screen.Win)
+            CheckContinuity(input);
+    }
+    void RunMainMenu(string input)
+    {
+        bool isValidLevel = (input == "1" || input == "2" || input == "3");
+
+        if (isValidLevel)
+        {
+            level = int.Parse(input);
+            SetPassword();
+            StartGame();
+        }
+        else if (input == "007")
+        {
+            Terminal.WriteLine("Hello Mr. Bond !!!");
+        }
+        else if (count > 1)
+        {
+            Terminal.ClearScreen();
+            Terminal.WriteLine("Choose a valid level");
+        }
+    }
+
+    void SetPassword()
+    {
+        int k = Random.Range(0, lvl1password.Length);
+        switch (level)
+        {
+            case 1:
+                password = lvl1password[k];
+                break;
+
+            case 2:
+                password = lvl2password[k];
+                break;
+            case 3:
+                password = lvl3password[k];
+                break;
+        }
+    }
+
+    void CheckPassword(string input)
+    {
+        input = input.ToLower();
+
+        if (password == input)
+            DisplayWinScreen();
+        else
+        {
+            Terminal.ClearScreen();
+            Terminal.WriteLine(Menu);
+            Terminal.WriteLine("Awww..... It's not correct but you are very near");
+            Terminal.WriteLine("\nHere is the Hint:" + password.Anagram() + "\nEnter Password:");
+        }
+    }
+
+    void DisplayWinScreen()
+    {
+        currentScreen = Screen.Win;
+        ShowLevelReward();
+    }
+
+    void ShowLevelReward()
+    {
+        Terminal.WriteLine(@"  Correct!!!
+              ~~    ~~     
+             /  \  /  \   
+            (    \/    )   
+             \        /  
+              \      /  
+               \    /      
+                \  /
+                 \/
+                                   ");
+        Terminal.WriteLine("Want to play again?/nY or N:");
+    }
+
+    void CheckContinuity(string input)
+    {
+        input = input.ToUpper();
+
+        if (input == "Y")
+        {
+            Terminal.ClearScreen();
+            count = 0;
+            Start();
+        }
+        else if (input == "N")
+        {
+            Terminal.ClearScreen();
+            Terminal.WriteLine("See you Soon...... :)");
+        }
+        else
+        {
+            Terminal.ClearScreen();
+            Terminal.WriteLine(Menu);
+            Terminal.WriteLine("Enter valid Input");
+            Terminal.WriteLine("Want to play again?/nY or N:");
+        }
+    }
+}
